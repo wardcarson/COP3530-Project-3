@@ -8,7 +8,7 @@ To Do List:
 -   each element in the adjacency list should be an Node so that it can hold the following data:
 -       Node should include city name and vector of pairs for its neighbors/edge weight and number of covid cases
 -   edges hold the distance between cities
--   
+something similar to this: 
 ![image](https://user-images.githubusercontent.com/73550658/142418417-05684c9f-abc2-450e-9141-dd929f068f83.png)
 
 
