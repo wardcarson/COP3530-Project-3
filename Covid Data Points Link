@@ -2,3 +2,5 @@
 I created 62k city names(Real) and got covid data points(100k) from Time Series csv files. The data points are not accurate according to the cities. 
 Also,We need 40k city names. I think we can use some fictional city name. I am attching the link to the excel file. 
 https://uflorida-my.sharepoint.com/:x:/g/personal/chowdhury_a_ufl_edu/EUCx9zFq-AJNsPmlbzyrASAB2jNqqRnvzpV81R9DVmjZBA?e=8daTN5 
+Link for getting the city names is : https://simplemaps.com/data/world-cities
+Link for getting the covid data points is: https://www.kaggle.com/sudalairajkumar/novel-corona-virus-2019-dataset/version/151?select=time_series_covid_19_confirmed.csv
