@@ -112,7 +112,7 @@ void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo)
             
             getline(stream, city, ',');
             getline(stream, stateId, ',');
-            city = city + stateId;  //combine the city name and stateId,if it is US city
+            city = city + stateId;  //combine the city name and stateId,if it is US/Canada city
             
             //getting the confirmed covid case no
             getline(stream, covidCase, ',');
