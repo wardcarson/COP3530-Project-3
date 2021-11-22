@@ -5,8 +5,6 @@ using namespace std;
 #include <fstream>
 #include <sstream>
 
-
-
 class Graph
 {
 private:
@@ -16,6 +14,7 @@ private:
     //Creating these for the purpose of reading the files
     string cityName;
     int covidCaseNum,distance; 
+    
     Graph(int covidCase,int distance) 
     {
         covidCaseNum = covidCase;
@@ -23,6 +22,7 @@ private:
     }
     
 public:
+    Graph();
     void insertEdge(string from, string to, int distance);
     bool isEdge(string from, string to);
     int getWeight(string from, string to);
@@ -32,7 +32,7 @@ public:
 
 };
 
-
+Graph::Graph(){}
 void Graph::insertEdge(string from, string to, int distance) {
 
     graph[from].push_back(make_pair(to, distance));
