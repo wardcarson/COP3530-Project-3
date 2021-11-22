@@ -9,34 +9,30 @@ class Graph {
 
     struct City {
         string cityName;
-        int numCovidCases;
+        int numCovidCases,distance;
+        //Creating these for the purpose of reading the files
+        City(int covidCase, int distance)
+        {
+            numCovidCases = covidCase;
+            this->distance = distance;
+        }
     };
 private:
     map<string, vector<pair<string, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<string, int>>>::iterator it;
     
-    //Creating these for the purpose of reading the files
-    string cityName;
-    int covidCaseNum,distance; 
     
-    Graph(int covidCase,int distance) 
-    {
-        covidCaseNum = covidCase;
-        this->distance = distance;
-    }
     
 public:
-    Graph();
     void insertEdge(string from, string to, int distance);
     bool isEdge(string from, string to);
     int getWeight(string from, string to);
     vector<string> getNeighbors(string vertex);
     void printGraph();
-    void readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo);
+    void readingCSVFile(string nameOfFile, map<string, City>& cityInfo);
 
 };
 
-Graph::Graph(){}
 void Graph::insertEdge(string from, string to, int distance) {
 
     graph[from].push_back(make_pair(to, distance));
@@ -99,7 +95,7 @@ void Graph::printGraph()
     }
 }
 //We may need to change the format of the map for the csv file and the way of setting the vertex  
-void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo)
+void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
 {
     //Used the refrerence from Programming 2's project to read files
     ifstream openFile;
@@ -126,7 +122,7 @@ void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo)
             distanceOfCity = stoi(distance);
 
 
-            Graph cityData(covidCaseNo, distanceOfCity);
+            City cityData(covidCaseNo, distanceOfCity);
             cityInfo.emplace(city, cityData);
 
         }   
