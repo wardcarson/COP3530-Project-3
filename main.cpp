@@ -2,6 +2,8 @@ using namespace std;
 #include <vector>
 #include <iostream>
 #include <map>
+#include <fstream>
+#include <sstream>
 
 
 
@@ -10,13 +12,24 @@ class Graph
 private:
     map<string, vector<pair<string, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<string, int>>>::iterator it;
-
+    
+    //Creating these for the purpose of reading the files
+    string cityName;
+    int covidCaseNum,distance; 
+    Graph(int covidCase,int distance) 
+    {
+        covidCaseNum = covidCase;
+        this->distance = distance;
+    }
+    
 public:
     void insertEdge(string from, string to, int distance);
     bool isEdge(string from, string to);
     int getWeight(string from, string to);
     vector<string> getNeighbors(string vertex);
     void printGraph();
+    void readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo);
+
 };
 
 
@@ -79,6 +92,43 @@ void Graph::printGraph()
             cout << "to " << it->second[j].first << " is " << it->second[j].second << " miles, ";
         }
         cout << endl;
+    }
+}
+//We may need to change the format of the map for the csv file and the way of setting the vertex  
+void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo) 
+{
+    //Used the refrerence from Programming 2's project to read files
+    ifstream openFile;
+    openFile.open(nameOfFile);
+    if (openFile.is_open())
+    {
+        string infoOfCity;
+        getline(openFile, infoOfCity);
+        while (getline(openFile,infoOfCity))
+        {
+            istringstream stream(infoOfCity);
+            string city, stateId, covidCase, distance="";
+            int covidCaseNo, distanceOfCity = 0;
+            
+            getline(stream, city, ',');
+            getline(stream, stateId, ',');
+            city = city + stateId;  //combine the city name and stateId,if it is US city
+            
+            //getting the confirmed covid case no
+            getline(stream, covidCase, ',');
+            covidCaseNo = stoi(covidCase);
+            
+            getline(stream, distance, ',');
+            distanceOfCity = stoi(distance);
+            
+            Graph cityData(covidCaseNo, distanceOfCity);
+            cityInfo.emplace(city, cityData);
+
+        }   
+    }
+    else
+    {
+        cout << "File is Not Open!" << endl;
     }
 }
 
