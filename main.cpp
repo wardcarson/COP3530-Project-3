@@ -5,8 +5,12 @@ using namespace std;
 #include <fstream>
 #include <sstream>
 
-class Graph
-{
+class Graph {
+
+    struct City {
+        string cityName;
+        int numCovidCases;
+    };
 private:
     map<string, vector<pair<string, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<string, int>>>::iterator it;
@@ -95,7 +99,7 @@ void Graph::printGraph()
     }
 }
 //We may need to change the format of the map for the csv file and the way of setting the vertex  
-void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo) 
+void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo)
 {
     //Used the refrerence from Programming 2's project to read files
     ifstream openFile;
@@ -120,7 +124,8 @@ void Graph::readingCSVFile(string nameOfFile, map<string, Graph>& cityInfo)
             
             getline(stream, distance, ',');
             distanceOfCity = stoi(distance);
-            
+
+
             Graph cityData(covidCaseNo, distanceOfCity);
             cityInfo.emplace(city, cityData);
 
