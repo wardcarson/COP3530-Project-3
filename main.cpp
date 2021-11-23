@@ -9,33 +9,33 @@ class Graph {
 
     struct City {
         string cityName;
-        int numCovidCases,distance;
-        //Creating these for the purpose of reading the files
-        City(int covidCase, int distance)
-        {
-            numCovidCases = covidCase;
-            this->distance = distance;
+        int numCovidCases;
+
+        City(int _numCovidCases, string _cityName) {
+            numCovidCases = _numCovidCases;
+            cityName = _cityName;
         }
     };
 private:
-    map<string, vector<pair<string, int>>> graph; // map<source, vector<destination, distance>>
-    map<string, vector<pair<string, int>>>::iterator it;
-    
-    
+    map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>
+    map<City, vector<pair<City, int>>>::iterator it;
+
     
 public:
-    void insertEdge(string from, string to, int distance);
+    void insertEdge(City from, City to, int distance);
     bool isEdge(string from, string to);
     int getWeight(string from, string to);
     vector<string> getNeighbors(string vertex);
     void printGraph();
-    void readingCSVFile(string nameOfFile, map<string, City>& cityInfo);
+    void readCSVFindAllCities(string nameOfFile);
+    void readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities);
 
 };
 
-void Graph::insertEdge(string from, string to, int distance) {
+void Graph::insertEdge(City from, City to, int distance) {
 
-    graph[from].push_back(make_pair(to, distance));
+    //Update: what is the best set up for our map? I think we can do string here right??
+    graph[from.cityName].push_back(make_pair(to, distance));
 }
 
 bool Graph::isEdge(string from, string to) {
@@ -94,10 +94,10 @@ void Graph::printGraph()
         cout << endl;
     }
 }
-//We may need to change the format of the map for the csv file and the way of setting the vertex  
-void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
-{
-    //Used the refrerence from Programming 2's project to read files
+
+void Graph::readCSVFindAllCities(string nameOfFile) {
+    //Update: made this a variable in here
+    map<string, City> mapOfallCities; //map<city name, City node>
     ifstream openFile;
     openFile.open(nameOfFile);
     if (openFile.is_open())
@@ -107,12 +107,12 @@ void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
         while (getline(openFile,infoOfCity))
         {
             istringstream stream(infoOfCity);
-            string city, stateId, covidCase, distance="";
+            string cityName, stateId, covidCase, distance="";
             int covidCaseNo, distanceOfCity = 0;
             
-            getline(stream, city, ',');
+            getline(stream, cityName, ',');
             getline(stream, stateId, ',');
-            city = city + stateId;  //combine the city name and stateId,if it is US/Canada city
+            cityName = cityName + stateId;
             
             //getting the confirmed covid case no
             getline(stream, covidCase, ',');
@@ -122,8 +122,10 @@ void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
             distanceOfCity = stoi(distance);
 
 
-            City cityData(covidCaseNo, distanceOfCity);
-            cityInfo.emplace(city, cityData);
+            //Update: no need for third column in csv file, please get rid of it
+            //Now this function's purpose is to create a map of all the cities in the csv file
+            City cityData(covidCaseNo, cityName);
+            mapOfallCities.emplace(cityName, cityData);
 
         }   
     }
@@ -131,8 +133,48 @@ void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
     {
         cout << "File is Not Open!" << endl;
     }
-    //call new read csv file function and give it our map that we just created. In this new function we will use the insertEdge function to add verticies to our graph 
-    //using a function that randomly generates neighbors with the map cityInfo.
+
+    //Update: call new readCSV file function to insert cities into our graph
+    readCSVAddtoGraph(nameOfFile, mapOfallCities);
+}
+
+void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities) {
+    ifstream openFile;
+    openFile.open(nameOfFile);
+    if (openFile.is_open())
+    {
+        string infoOfCity;
+        getline(openFile, infoOfCity);
+        while (getline(openFile,infoOfCity))
+        {
+            istringstream stream(infoOfCity);
+            string cityName, stateId, covidCase, distance="";
+            int covidCaseNo, distanceOfCity = 0;
+
+            getline(stream, cityName, ',');
+            getline(stream, stateId, ',');
+            cityName = cityName + stateId;
+
+            getline(stream, covidCase, ',');
+            covidCaseNo = stoi(covidCase);
+
+            getline(stream, distance, ',');
+            distanceOfCity = stoi(distance);
+
+            //Update: no need for third column in csv file, please get rid of it
+            //Now this function's purpose is to insert cities into our graph
+
+            //Update: insert new city into graph using insertEdge
+            //randomly generate four neighbors using mapOfAllCities and use random distances
+
+
+
+        }
+    }
+    else
+    {
+        cout << "File is Not Open!" << endl;
+    }
 }
 
 int main() {
