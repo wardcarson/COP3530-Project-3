@@ -107,8 +107,8 @@ void Graph::readCSVFindAllCities(string nameOfFile) {
         while (getline(openFile,infoOfCity))
         {
             istringstream stream(infoOfCity);
-            string cityName, stateId, covidCase, distance="";
-            int covidCaseNo, distanceOfCity = 0;
+            string cityName, stateId, covidCase="";
+            int covidCaseNo = 0;
             
             getline(stream, cityName, ',');
             getline(stream, stateId, ',');
@@ -118,11 +118,9 @@ void Graph::readCSVFindAllCities(string nameOfFile) {
             getline(stream, covidCase, ',');
             covidCaseNo = stoi(covidCase);
             
-            getline(stream, distance, ',');
-            distanceOfCity = stoi(distance);
+            
 
-
-            //Update: no need for third column in csv file, please get rid of it
+            //Update: no need for third column in csv file, please get rid of it   //Done
             //Now this function's purpose is to create a map of all the cities in the csv file
             City cityData(covidCaseNo, cityName);
             mapOfallCities.emplace(cityName, cityData);
@@ -148,8 +146,8 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
         while (getline(openFile,infoOfCity))
         {
             istringstream stream(infoOfCity);
-            string cityName, stateId, covidCase, distance="";
-            int covidCaseNo, distanceOfCity = 0;
+            string cityName, stateId, covidCase="";
+            int covidCaseNo = 0;
 
             getline(stream, cityName, ',');
             getline(stream, stateId, ',');
@@ -158,10 +156,8 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             getline(stream, covidCase, ',');
             covidCaseNo = stoi(covidCase);
 
-            getline(stream, distance, ',');
-            distanceOfCity = stoi(distance);
-
-            //Update: no need for third column in csv file, please get rid of it
+      
+            //Update: no need for third column in csv file, please get rid of it   //Done
             //Now this function's purpose is to insert cities into our graph
 
             //Update: insert new city into graph using insertEdge
