@@ -131,6 +131,8 @@ void Graph::readingCSVFile(string nameOfFile, map<string, City>& cityInfo)
     {
         cout << "File is Not Open!" << endl;
     }
+    //call new read csv file function and give it our map that we just created. In this new function we will use the insertEdge function to add verticies to our graph 
+    //using a function that randomly generates neighbors with the map cityInfo.
 }
 
 int main() {
