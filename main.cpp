@@ -163,7 +163,21 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
 
             //Update: insert new city into graph using insertEdge
             //randomly generate four neighbors using mapOfAllCities and use random distances
+            int index = 0;
+            int distance = 0;
+            City newCity(covidCaseNo,cityName);
+            std::random_device rd; // obtain a random number from hardware
+            std::mt19937 gen(rd()); // seed the generator
+            std::uniform_int_distribution<> distr(0, names.size()); // define the range
+            std::mt19937 gen2(rd()); // seed the generator
+            std::uniform_int_distribution<> distr2(0, 10000); // define the range
+            //auto temp = mapOfallCities[names.at(index)];
+            for(int i = 0; i < 4; i++) {
 
+                index = distr(gen);
+                distance = distr2(gen2);
+                insertEdge(newCity,mapOfallCities.at(names[index]),distance);
+            }
 
 
         }
