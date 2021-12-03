@@ -4,6 +4,8 @@ using namespace std;
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <random>
+#include <set>
 
 class Graph {
 
@@ -19,7 +21,8 @@ class Graph {
 private:
     map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<City, int>>>::iterator it;
-    map<string, City> mapOfAllCities;
+    vector<string> cityList;
+    int numCities = 0;
     
 public:
     void insertEdge(string from, City to, int distance);
@@ -29,6 +32,8 @@ public:
     void printGraph();
     void readCSVFindAllCities(string nameOfFile);
     void readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities, vector<string> &allCities);
+    vector<string> shortestDistance(const Graph& graph, string src, string destination);
+    vector<string> safestCovidPath(const Graph& graph, string src, string destination);
 
 };
 
@@ -36,6 +41,7 @@ void Graph::insertEdge(string from, City to, int distance) {
 
     //Update: what is the best set up for our map? I think we can do string here right??
     graph[from].push_back(make_pair(to, distance));
+    numCities++;
 }
 
 bool Graph::isEdge(string from, string to) {
@@ -81,8 +87,7 @@ vector<string> Graph::getNeighbors(string vertex) {
     return neighbors;
 }
 
-void Graph::printGraph()
-{
+void Graph::printGraph() {
     int cnt = 0;
     for(it = graph.begin(); it != graph.end(); ++it)
     {
@@ -135,8 +140,9 @@ void Graph::readCSVFindAllCities(string nameOfFile) {
 
     //Update: call new readCSV file function to insert cities into our graph
     readCSVAddtoGraph(nameOfFile, mapOfallCities, allCities);
+    cityList = allCities;
 }
-//Now this function's purpose is to insert cities into our graph
+
 void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities, vector<string> &allCities) {
     ifstream openFile;
     openFile.open(nameOfFile);
@@ -168,18 +174,15 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             City newCity(covidCaseNo,cityName);
             std::random_device rd; // obtain a random number from hardware
             std::mt19937 gen(rd()); // seed the generator
-            std::uniform_int_distribution<> distr(0, names.size()); // define the range
+            std::uniform_int_distribution<> distr(0, allCities.size()); // define the range
             std::mt19937 gen2(rd()); // seed the generator
             std::uniform_int_distribution<> distr2(0, 10000); // define the range
             //auto temp = mapOfallCities[names.at(index)];
             for(int i = 0; i < 4; i++) {
-
                 index = distr(gen);
                 distance = distr2(gen2);
-                insertEdge(newCity,mapOfallCities.at(names[index]),distance);
+                insertEdge(newCity.cityName,mapOfallCities.at(allCities[index]), distance);
             }
-
-
         }
     }
     else
@@ -187,6 +190,148 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
         cout << "File is Not Open!" << endl;
     }
 }
+
+vector<string> Graph::shortestDistance(const Graph& graph, string src, string destination) {
+
+    int v = graph.numCities;
+    int infinity = ~(1 << 31);
+    map<string, int> d;
+    map<string, string> p;
+    set<string> S = {src};
+    set<string> V_S;
+
+    //iterte through all cities
+    for (int i = 0; i<cityList.size(); i++) {
+        V_S.insert(cityList[i]);
+    }
+
+    //iterating through all cities
+    for (int i = 0; i < cityList.size(); i++) {
+        p[cityList[i]] = src;
+        for (auto x : graph.graph.at(src))
+        {
+            if (x.first.cityName == cityList[i])
+            {
+                d[cityList[i]] = x.second;
+            }
+            else
+            {
+                d[cityList[i]] = infinity;
+            }
+        }
+    }
+    d[src] = 0;
+
+    while (!V_S.empty())
+    {
+        int smallVal = infinity;
+        string indexOfsmall;
+
+        for (auto j : V_S)
+        {
+            if (d[j] <= smallVal) {
+                smallVal = d[j];
+                indexOfsmall = j;
+            }
+        }
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
+        for (auto x : graph.graph.at(indexOfsmall))
+        {
+            if ((d[indexOfsmall] + x.second) < d[x.first.cityName]) {
+                d[x.first.cityName] = d[indexOfsmall] + x.second;
+                p[x.first.cityName] = stoi(indexOfsmall);
+            }
+        }
+    }
+    vector<string> shortestPath;
+    bool working = true;
+    string temp = src;
+    while (working) {
+        if (temp == destination) {
+            shortestPath.push_back(temp);
+            working = false;
+        }
+        else {
+            shortestPath.push_back(temp);
+            temp = p[temp];
+        }
+    }
+    return shortestPath;
+}
+
+vector<string> Graph::safestCovidPath(const Graph& graph, string src, string destination) {
+    int v = graph.numCities;
+    int infinity = ~(1 << 31);
+    map<string, int> d;
+    map<string, string> p;
+    set<string> S = {src};
+    set<string> V_S;
+
+    //iterte through all cities
+    for (int i = 0; i<cityList.size(); i++) {
+        V_S.insert(cityList[i]);
+    }
+
+    //iterating through all cities
+    for (int i = 0; i < cityList.size(); i++) {
+        p[cityList[i]] = src;
+        for (auto x : graph.graph.at(src))
+        {
+            if (x.first.cityName == cityList[i])
+            {
+                d[cityList[i]] = x.first.numCovidCases;
+            }
+            else
+            {
+                d[cityList[i]] = infinity;
+            }
+        }
+    }
+    d[src] = 0;
+
+    while (!V_S.empty())
+    {
+        int smallVal = infinity;
+        string indexOfsmall;
+
+        for (auto j : V_S)
+        {
+            if (d[j] <= smallVal) {
+                smallVal = d[j];
+                indexOfsmall = j;
+            }
+        }
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
+        for (auto x : graph.graph.at(indexOfsmall))
+        {
+            if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
+                d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
+                p[x.first.cityName] = stoi(indexOfsmall);
+            }
+        }
+    }
+    vector<string> safestPath;
+    bool working = true;
+    string temp = src;
+    while (working) {
+        if (temp == destination) {
+            safestPath.push_back(temp);
+            working = false;
+        }
+        else {
+            safestPath.push_back(temp);
+            temp = p[temp];
+        }
+    }
+    return safestPath;
+}
+
+
+
 
 int main() {
     /*
