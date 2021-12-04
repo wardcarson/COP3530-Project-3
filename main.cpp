@@ -6,6 +6,7 @@ using namespace std;
 #include <sstream>
 #include <random>
 #include <set>
+#include <list>
 
 class Graph {
 
@@ -22,6 +23,7 @@ private:
     map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<City, int>>>::iterator it;
     vector<string> cityList;
+    int numEdges = 0;
     int numCities = 0;
     
 public:
@@ -34,14 +36,15 @@ public:
     void readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities, vector<string> &allCities);
     vector<string> shortestDistance(const Graph& graph, string src, string destination);
     vector<string> safestCovidPath(const Graph& graph, string src, string destination);
-
+    vector<string> bellmanFordShortestPath(Graph &graph, string src, string dest);
+    vector<string> bellmanFordSafestPath(Graph &graph, string src, string dest);
 };
 
 void Graph::insertEdge(string from, City to, int distance) {
 
     //Update: what is the best set up for our map? I think we can do string here right??
     graph[from].push_back(make_pair(to, distance));
-    numCities++;
+    numEdges++;
 }
 
 bool Graph::isEdge(string from, string to) {
@@ -131,6 +134,7 @@ void Graph::readCSVFindAllCities(string nameOfFile) {
             City cityData(covidCaseNo, cityName);
             mapOfallCities.emplace(cityName, cityData);
             allCities.push_back(cityName);
+            numCities++;
         }   
     }
     else
@@ -269,7 +273,7 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
     set<string> S = {src};
     set<string> V_S;
 
-    //iterte through all cities
+    //iterate through all cities
     for (int i = 0; i<cityList.size(); i++) {
         V_S.insert(cityList[i]);
     }
@@ -329,6 +333,76 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
     }
     return safestPath;
 }
+
+vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
+    map<string, pair<string, int>> safestDistances;
+    vector<pair<City, int>>::iterator traverse;
+
+    for (int i = 0; i <= cityList.size(); ++i) {
+        safestDistances[cityList[i]].first = "";
+        safestDistances[cityList[i]].second = -1;
+    }
+
+    safestDistances[src].first = src; //src
+    safestDistances[src].second = 0;
+
+    for (int i = 1; i <= cityList.size() - 1; ++i) {
+        for (int j = 1; j <= cityList.size(); ++j) {
+
+            traverse = graph.graph[cityList[j]].begin();
+
+            while (traverse != graph.graph[cityList[j]].end()) {
+                if (safestDistances[cityList[j]].first == "") {
+                    ++traverse;
+                    continue;
+                }
+
+                if ((*traverse).second + safestDistances[cityList[j]].second < safestDistances[(*traverse).first.cityName].second) {
+                    safestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
+                    safestDistances[(*traverse).first.cityName].second = j;
+                }
+                ++traverse;
+            }
+        }
+    }
+
+}
+
+vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
+    map<string, pair<string, int>> safestDistances;
+    vector<pair<City, int>>::iterator traverse;
+
+    for (int i = 0; i <= cityList.size(); ++i) {
+        safestDistances[cityList[i]].first = "";
+        safestDistances[cityList[i]].second = -1;
+    }
+
+    safestDistances[src].first = src; //src
+    safestDistances[src].second = 0;
+
+    for (int i = 1; i <= cityList.size() - 1; ++i) {
+        for (int j = 1; j <= cityList.size(); ++j) {
+
+            traverse = graph.graph[cityList[j]].begin();
+
+            while (traverse != graph.graph[cityList[j]].end()) {
+                if (safestDistances[cityList[j]].first == "") {
+                    ++traverse;
+                    continue;
+                }
+
+                if ((*traverse).first.numCovidCases + safestDistances[cityList[j]].second < safestDistances[(*traverse).first.cityName].second) {
+                    safestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
+                    safestDistances[(*traverse).first.cityName].second = j;
+                }
+                ++traverse;
+            }
+        }
+    }
+
+}
+
+
 
 
 
