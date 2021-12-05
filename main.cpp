@@ -20,7 +20,7 @@ class Graph {
         }
     };
 private:
-    map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>
+    map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>  
     map<string, vector<pair<City, int>>>::iterator it;
     vector<string> cityList;
     int numEdges = 0;
@@ -199,7 +199,7 @@ vector<string> Graph::shortestDistance(const Graph& graph, string src, string de
 
     int v = graph.numCities;
     int infinity = ~(1 << 31);
-    map<string, int> d;
+    map<string, long long> d;   //chnanged map value from int to long long to avoid integer overflow for large distance
     map<string, string> p;
     set<string> S = {src};
     set<string> V_S;
