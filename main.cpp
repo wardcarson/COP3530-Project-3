@@ -371,6 +371,7 @@ vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string d
     {
         shortestPath.push_back(it->first);
     }
+    shortestPath.push_back(dest);
     return shortestPath;
 }
 
@@ -411,6 +412,7 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
     {
         safestPath.push_back(it->first);
     }
+    safestPath.push_back(dest);
     return safestPath;
 }
 
