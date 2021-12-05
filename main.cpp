@@ -245,7 +245,7 @@ vector<string> Graph::shortestDistance(const Graph& graph, string src, string de
         {
             if ((d[indexOfsmall] + x.second) < d[x.first.cityName]) {
                 d[x.first.cityName] = d[indexOfsmall] + x.second;
-                p[x.first.cityName] = stoi(indexOfsmall);
+                p[x.first.cityName] = indexOfsmall;
             }
         }
     }
@@ -314,7 +314,7 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
         {
             if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
                 d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
-                p[x.first.cityName] = stoi(indexOfsmall);
+                p[x.first.cityName] = indexOfsmall;
             }
         }
     }
