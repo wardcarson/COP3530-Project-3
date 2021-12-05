@@ -410,6 +410,7 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
 int main() {
     /*
     Graph *graph = new Graph;
+    graph->readCSVFindAllCities("Covid Data points.csv");
     graph->insertEdge("Orlando", "LA", 500);
     graph->insertEdge("Orlando", "New Orleans", 200);
     graph->insertEdge("LA", "Orlando", 500);
