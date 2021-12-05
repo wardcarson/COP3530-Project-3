@@ -103,7 +103,7 @@ void Graph::printGraph() {
     }
 }
 
-void Graph::readCSVFindAllCities(string nameOfFile) {
+void Graph::readCSVFindAllCities(string nameOfFile) {        //The Csv files has only two column city and covid case
     vector<string> allCities;
     map<string, City> mapOfallCities; //map<city name, City node>
     ifstream openFile;
@@ -119,8 +119,8 @@ void Graph::readCSVFindAllCities(string nameOfFile) {
             int covidCaseNo = 0;
             
             getline(stream, cityName, ',');
-            getline(stream, stateId, ',');
-            cityName = cityName + stateId;
+            //getline(stream, stateId, ',');   
+           // cityName = cityName + stateId;
             
             //getting the confirmed covid case no
             getline(stream, covidCase, ',');
@@ -161,8 +161,8 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             int covidCaseNo = 0;
 
             getline(stream, cityName, ',');
-            getline(stream, stateId, ',');
-            cityName = cityName + stateId;
+            //getline(stream, stateId, ','); //don't need state name anymore
+            //cityName = cityName + stateId;
 
             getline(stream, covidCase, ',');
             covidCaseNo = stoi(covidCase);
