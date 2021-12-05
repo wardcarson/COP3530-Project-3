@@ -335,16 +335,17 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
 }
 
 vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
-    map<string, pair<string, int>> safestDistances;
+    map<string, pair<string, int>> shortestDistances;
+    map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
 
     for (int i = 0; i <= cityList.size(); ++i) {
-        safestDistances[cityList[i]].first = "";
-        safestDistances[cityList[i]].second = -1;
+        shortestDistances[cityList[i]].first = "";
+        shortestDistances[cityList[i]].second = -1;
     }
 
-    safestDistances[src].first = src; //src
-    safestDistances[src].second = 0;
+    shortestDistances[src].first = src; //src
+    shortestDistances[src].second = 0;
 
     for (int i = 1; i <= cityList.size() - 1; ++i) {
         for (int j = 1; j <= cityList.size(); ++j) {
@@ -352,24 +353,30 @@ vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string d
             traverse = graph.graph[cityList[j]].begin();
 
             while (traverse != graph.graph[cityList[j]].end()) {
-                if (safestDistances[cityList[j]].first == "") {
+                if (shortestDistances[cityList[j]].first == "") {
                     ++traverse;
                     continue;
                 }
 
-                if ((*traverse).second + safestDistances[cityList[j]].second < safestDistances[(*traverse).first.cityName].second) {
-                    safestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
-                    safestDistances[(*traverse).first.cityName].second = j;
+                if ((*traverse).second + shortestDistances[cityList[j]].second < shortestDistances[(*traverse).first.cityName].second) {
+                    shortestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
+                    shortestDistances[(*traverse).first.cityName].second = j;
                 }
                 ++traverse;
             }
         }
     }
-
+    vector<string> shortestPath;
+    for (it = shortestDistances.begin(); it != shortestDistances.end(); it++)
+    {
+        shortestPath.push_back(it->first);
+    }
+    return shortestPath;
 }
 
 vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
     map<string, pair<string, int>> safestDistances;
+    map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
 
     for (int i = 0; i <= cityList.size(); ++i) {
@@ -399,7 +406,12 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
             }
         }
     }
-
+    vector<string> safestPath;
+    for (it = safestDistances.begin(); it != safestDistances.end(); it++)
+    {
+        safestPath.push_back(it->first);
+    }
+    return safestPath;
 }
 
 
