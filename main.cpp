@@ -251,9 +251,9 @@ vector<string> Graph::shortestDistance(const Graph& graph, string src, string de
     }
     vector<string> shortestPath;
     bool working = true;
-    string temp = src;
+    string temp = destination;
     while (working) {
-        if (temp == destination) {
+        if (temp == src) {
             shortestPath.push_back(temp);
             working = false;
         }
@@ -262,7 +262,7 @@ vector<string> Graph::shortestDistance(const Graph& graph, string src, string de
             temp = p[temp];
         }
     }
-    return shortestPath;
+    return shortestPath;  //This stores the path in the backward direction.
 }
 
 vector<string> Graph::safestCovidPath(const Graph& graph, string src, string destination) {
@@ -320,9 +320,9 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
     }
     vector<string> safestPath;
     bool working = true;
-    string temp = src;
+    string temp = destination;
     while (working) {
-        if (temp == destination) {
+        if (temp == src) {
             safestPath.push_back(temp);
             working = false;
         }
@@ -331,7 +331,7 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
             temp = p[temp];
         }
     }
-    return safestPath;
+    return safestPath; //this stores the path in backeward direction like from desination to source
 }
 
 vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
