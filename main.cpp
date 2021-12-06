@@ -431,6 +431,60 @@ int main() {
     graph->insertEdge("New Orleans" , "Orlando", 200);
     graph->printGraph();
      */
+    Graph* graph = new Graph();
+    //graph->readCSVFindAllCities("coviddatapoints.csv");
+    //graph->readCSVFindAllCities("testing.csv");
+    //graph->printGraph();
+    bool runProgram = true;
+    
+    string source;
+    string destination;
+    string option;
+    graph->readCSVFindAllCities("testing.csv");
+    while(runProgram) {
+        cout << "Welcome to the Covid travel Calculator " << endl;
+        cout << "Please select an option: " << endl;
+        cout << "1. Find shortest route between locations" << endl;
+        cout << "2. Find safest route between locations" << endl;
+        cout << "3. Compare safest route and shortest route between locations" << endl;
+        cout << "4. Exit Program" << endl;
+        cin >> option;
+        if(option == "1") {
+            cout << "Please enter a starting location: " << endl;
+            cin >> ws;
+            getline(cin,source);
+            cout << "Please enter a destination: " << endl;
+            cin >> ws;
+            getline(cin,destination);
+            cout << "Calculating..." << endl;
+            long long m = graph->shortestDistance(*graph, source, destination);
+            cout << "The shortest distance from " << source << " to " << destination  <<" is: "<< m <<endl;
+        }
+        if(option == "2") {
+            cout << "Please enter a starting location: " << endl;
+            cin >> ws;
+            getline(cin,source);
+            cout << "Please enter a destination: " << endl;
+            cin >> ws;
+            getline(cin,destination);
+            cout << "Calculating..." << endl;
+            // put in safestCovidPath function call
+            cout << "The safest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
+            continue;
+        }
+        if(option == "3") {
+            //find quick way to compare, showing cases/miles between two cities
+            continue;
+        }
+        if(option == "4") {
+            break;
+        }
+        else {
+            continue;
+        }
+
+
+    }
 
 }
 
