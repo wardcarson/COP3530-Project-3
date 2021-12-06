@@ -19,13 +19,15 @@ class Graph {
             cityName = _cityName;
         }
     };
+public:
+    map<string, vector<pair<City, int>>> graph;
 private:
-    map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>  
+    //map<string, vector<pair<City, int>>> graph; // map<source, vector<destination, distance>>
     map<string, vector<pair<City, int>>>::iterator it;
     vector<string> cityList;
     int numEdges = 0;
     int numCities = 0;
-    
+
 public:
     void insertEdge(string from, City to, int distance);
     bool isEdge(string from, string to);
@@ -117,17 +119,17 @@ void Graph::readCSVFindAllCities(string nameOfFile) {        //The Csv files has
             istringstream stream(infoOfCity);
             string cityName, stateId, covidCase="";
             int covidCaseNo = 0;
-            
+
             getline(stream, cityName, ',');
-            //getline(stream, stateId, ',');   
-           // cityName = cityName + stateId;
-            
+            //getline(stream, stateId, ',');
+            // cityName = cityName + stateId;
+
             //getting the confirmed covid case no
             getline(stream, covidCase, ',');
             covidCaseNo = stoi(covidCase);
 
-            
-            
+
+
 
             //Update: no need for third column in csv file, please get rid of it   //Done
             //Now this function's purpose is to create a map of all the cities in the csv file
@@ -135,7 +137,7 @@ void Graph::readCSVFindAllCities(string nameOfFile) {        //The Csv files has
             mapOfallCities.emplace(cityName, cityData);
             allCities.push_back(cityName);
             numCities++;
-        }   
+        }
     }
     else
     {
@@ -167,7 +169,7 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             getline(stream, covidCase, ',');
             covidCaseNo = stoi(covidCase);
 
-      
+
             //Update: no need for third column in csv file, please get rid of it   //Done
             //Now this function's purpose is to insert cities into our graph
 
@@ -185,7 +187,7 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             for(int i = 0; i < 4; i++) {
                 index = distr(gen);
                 distance = distr2(gen2);
-                insertEdge(newCity.cityName,mapOfallCities.at(allCities[index]), distance);  
+                insertEdge(newCity.cityName,mapOfallCities.at(allCities[index]), distance);
             }
         }
     }
@@ -347,7 +349,7 @@ vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string d
     shortestDistances[src].first = src; //src
     shortestDistances[src].second = 0;
 
-    for (int i = 1; i <= cityList.size() - 1; ++i) {   
+    for (int i = 1; i <= cityList.size() - 1; ++i) {
         for (int j = 1; j <= cityList.size()-1; ++j) {
 
             traverse = graph.graph[cityList[j]].begin();
@@ -436,7 +438,7 @@ int main() {
     //graph->readCSVFindAllCities("testing.csv");
     //graph->printGraph();
     bool runProgram = true;
-    
+
     string source;
     string destination;
     string option;
@@ -450,6 +452,12 @@ int main() {
         cout << "4. Exit Program" << endl;
         cin >> option;
         if(option == "1") {
+            cout << "Choose a method of calculations: " << endl;
+            cout << "1. Dijkstra's" << endl;
+            cout << "2. Bellman-Ford" << endl;
+            string method;
+            cin >> ws;
+            getline(cin,method);
             cout << "Please enter a starting location: " << endl;
             cin >> ws;
             getline(cin,source);
@@ -457,10 +465,36 @@ int main() {
             cin >> ws;
             getline(cin,destination);
             cout << "Calculating..." << endl;
-            long long m = graph->shortestDistance(*graph, source, destination); // now the string of vector should work//need to change it to iteration of vector
-            cout << "The shortest distance from " << source << " to " << destination  <<" is: "<< m <<endl;
+            vector<string> vec;
+            if(method == "1") {
+                vec = graph->shortestDistance(*graph, source, destination);
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[vec.size()-1-i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                // now the string of vector should work//need to change it to iteration of vector
+            }
+            else if(method == "2") {
+                vec = graph->bellmanFordShortestPath(*graph,source,destination);
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+            }
+            cout << endl;
+            //cout << "The shortest distance from " << source << " to " << destination  <<" is: "<< m <<endl;
         }
         if(option == "2") {
+            cout << "Choose a method of calculations: " << endl;
+            cout << "1. Dijkstra's" << endl;
+            cout << "2. Bellman-Ford" << endl;
+            string method;
+            cin >> ws;
+            getline(cin,method);
             cout << "Please enter a starting location: " << endl;
             cin >> ws;
             getline(cin,source);
@@ -469,11 +503,92 @@ int main() {
             getline(cin,destination);
             cout << "Calculating..." << endl;
             // put in safestCovidPath function call
+            vector<string> vec;
+            //vec = graph->safestCovidPath(*graph, source, destination); // now the string of vector should work//need to change it to iteration of vector
+            //graph->printGraph();
             cout << "The safest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
+            if(method == "1") {
+                vec = graph->safestCovidPath(*graph, source, destination);
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[vec.size()-1-i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                // now the string of vector should work//need to change it to iteration of vector
+            }
+            else if(method == "2") {
+                vec = graph->bellmanFordSafestPath(*graph,source,destination);
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+            }
+            cout << endl;
             continue;
         }
         if(option == "3") {
             //find quick way to compare, showing cases/miles between two cities
+            cout << "Choose a method of calculations: " << endl;
+            cout << "1. Dijkstra's" << endl;
+            cout << "2. Bellman-Ford" << endl;
+            string method;
+            cin >> ws;
+            getline(cin,method);
+            cout << "Please enter a starting location: " << endl;
+            cin >> ws;
+            getline(cin,source);
+            cout << "Please enter a destination: " << endl;
+            cin >> ws;
+            getline(cin,destination);
+            cout << "Calculating..." << endl;
+            vector<string> vec;
+
+            if(method == "1") {
+                vec = graph->safestCovidPath(*graph, source, destination);
+                cout << "The safest covid path between " << source << " and " << destination << " is: " << endl;
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[vec.size()-1-i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                cout << endl;
+
+                vec = graph->shortestDistance(*graph, source, destination);
+                cout << "The shortest path between " << source << " and " << destination << " is: " << endl;
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[vec.size()-1-i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                cout << endl;
+            }
+
+            else if(method == "2") {
+                vec = graph->bellmanFordSafestPath(*graph, source, destination);
+                cout << "The safest covid path between " << source << " and " << destination << " is: " << endl;
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                cout << endl;
+
+                vec = graph->bellmanFordShortestPath(*graph, source, destination);
+                cout << "The shortest path between " << source << " and " << destination << " is: " << endl;
+                for(int i = 0; i < vec.size(); i++ ) {
+                    cout << vec[i];
+                    if(i != vec.size()-1) {
+                        cout << " -> ";
+                    }
+                }
+                cout << endl;
+            }
             continue;
         }
         if(option == "4") {
