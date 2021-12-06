@@ -457,7 +457,7 @@ int main() {
             cin >> ws;
             getline(cin,destination);
             cout << "Calculating..." << endl;
-            long long m = graph->shortestDistance(*graph, source, destination);
+            long long m = graph->shortestDistance(*graph, source, destination); // now the string of vector should work//need to change it to iteration of vector
             cout << "The shortest distance from " << source << " to " << destination  <<" is: "<< m <<endl;
         }
         if(option == "2") {
