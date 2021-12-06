@@ -389,7 +389,7 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
     safestDistances[src].second = 0;
 
     for (int i = 1; i <= cityList.size() - 1; ++i) {
-        for (int j = 1; j < cityList.size(); ++j) {   //changed the  j <= cityList.size()
+        for (int j = 1; j <= cityList.size()-1; ++j) {   //changed the  j <= cityList.size()
 
             traverse = graph.graph[cityList[j]].begin();
 
@@ -412,7 +412,7 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
     {
         safestPath.push_back(it->first);
     }
-    safestPath.push_back(dest);
+    //safestPath.push_back(dest); //don't need this, since it was pushed back already from map
     return safestPath;
 }
 
