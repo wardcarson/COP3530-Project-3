@@ -446,7 +446,8 @@ int main() {
     string source;
     string destination;
     string option;
-    graph->readCSVFindAllCities("testing.csv");
+    //graph->readCSVFindAllCities("testing.csv");
+    graph->readCSVFindAllCities("smallerdatapoints.csv");
     while(runProgram) {
         cout << "Welcome to the Covid travel Calculator " << endl;
         cout << "Please select an option: " << endl;
@@ -456,12 +457,6 @@ int main() {
         cout << "4. Exit Program" << endl;
         cin >> option;
         if(option == "1") {
-            cout << "Choose a method of calculations: " << endl;
-            cout << "1. Dijkstra's" << endl;
-            cout << "2. Bellman-Ford" << endl;
-            string method;
-            cin >> ws;
-            getline(cin,method);
             cout << "Please enter a starting location: " << endl;
             cin >> ws;
             getline(cin,source);
@@ -470,35 +465,23 @@ int main() {
             getline(cin,destination);
             cout << "Calculating..." << endl;
             vector<string> vec;
-            if(method == "1") {
-                vec = graph->shortestDistance(*graph, source, destination);
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[vec.size()-1-i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
+
+            vec = graph->shortestDistance(*graph, source, destination);
+            cout << "The shortest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
+            for(int i = 0; i < vec.size(); i++ ) {
+                cout << vec[vec.size()-1-i];
+                if(i != vec.size()-1) {
+                    cout << " -> ";
                 }
+            }
                 // now the string of vector should work//need to change it to iteration of vector
-            }
-            else if(method == "2") {
-                vec = graph->bellmanFordShortestPath(*graph,source,destination);
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
-                }
-            }
+            int bfsp = graph->bellmanFordShortestPath(*graph,source,destination);
             cout << endl;
+            cout << "According to Bellman-ford, from " << source << " to " << destination << " is " << bfsp << " miles." << endl;
             //cout << "The shortest distance from " << source << " to " << destination  <<" is: "<< m <<endl;
         }
         if(option == "2") {
-            cout << "Choose a method of calculations: " << endl;
-            cout << "1. Dijkstra's" << endl;
-            cout << "2. Bellman-Ford" << endl;
-            string method;
-            cin >> ws;
-            getline(cin,method);
+
             cout << "Please enter a starting location: " << endl;
             cin >> ws;
             getline(cin,source);
@@ -511,36 +494,22 @@ int main() {
             //vec = graph->safestCovidPath(*graph, source, destination); // now the string of vector should work//need to change it to iteration of vector
             //graph->printGraph();
             cout << "The safest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
-            if(method == "1") {
-                vec = graph->safestCovidPath(*graph, source, destination);
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[vec.size()-1-i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
+
+            vec = graph->safestCovidPath(*graph, source, destination);
+            for(int i = 0; i < vec.size(); i++ ) {
+                cout << vec[vec.size()-1-i];
+                if(i != vec.size()-1) {
+                    cout << " -> ";
                 }
+            }
                 // now the string of vector should work//need to change it to iteration of vector
-            }
-            else if(method == "2") {
-                vec = graph->bellmanFordSafestPath(*graph,source,destination);
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
-                }
-            }
+            int bfcovidpath = graph->bellmanFordSafestPath(*graph,source,destination);
             cout << endl;
+            cout << "According to Bellman-ford, this route contains " << bfcovidpath << " covid cases." << endl;
             continue;
         }
         if(option == "3") {
             //find quick way to compare, showing cases/miles between two cities
-            cout << "Choose a method of calculations: " << endl;
-            cout << "1. Dijkstra's" << endl;
-            cout << "2. Bellman-Ford" << endl;
-            string method;
-            cin >> ws;
-            getline(cin,method);
             cout << "Please enter a starting location: " << endl;
             cin >> ws;
             getline(cin,source);
@@ -550,49 +519,33 @@ int main() {
             cout << "Calculating..." << endl;
             vector<string> vec;
 
-            if(method == "1") {
-                vec = graph->safestCovidPath(*graph, source, destination);
-                cout << "The safest covid path between " << source << " and " << destination << " is: " << endl;
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[vec.size()-1-i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
-                }
-                cout << endl;
 
-                vec = graph->shortestDistance(*graph, source, destination);
-                cout << "The shortest path between " << source << " and " << destination << " is: " << endl;
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[vec.size()-1-i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
+            vec = graph->shortestDistance(*graph, source, destination);
+            cout << "The shortest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
+            for(int i = 0; i < vec.size(); i++ ) {
+                cout << vec[vec.size()-1-i];
+                if(i != vec.size()-1) {
+                    cout << " -> ";
                 }
-                cout << endl;
             }
+            // now the string of vector should work//need to change it to iteration of vector
+            int bfsp = graph->bellmanFordShortestPath(*graph,source,destination);
+            cout << endl;
+            cout << "According to Bellman-ford, from " << source << " to " << destination << " is " << bfsp << " miles." << endl;
+            cout << "The safest path from " << source << " to " << destination  <<" is: " /* put results from func*/ <<endl;
 
-            else if(method == "2") {
-                vec = graph->bellmanFordSafestPath(*graph, source, destination);
-                cout << "The safest covid path between " << source << " and " << destination << " is: " << endl;
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
+            vec = graph->safestCovidPath(*graph, source, destination);
+            for(int i = 0; i < vec.size(); i++ ) {
+                cout << vec[vec.size()-1-i];
+                if(i != vec.size()-1) {
+                    cout << " -> ";
                 }
-                cout << endl;
-
-                vec = graph->bellmanFordShortestPath(*graph, source, destination);
-                cout << "The shortest path between " << source << " and " << destination << " is: " << endl;
-                for(int i = 0; i < vec.size(); i++ ) {
-                    cout << vec[i];
-                    if(i != vec.size()-1) {
-                        cout << " -> ";
-                    }
-                }
-                cout << endl;
             }
+            // now the string of vector should work//need to change it to iteration of vector
+            int bfcovidpath = graph->bellmanFordSafestPath(*graph,source,destination);
+            cout << endl;
+            cout << "According to Bellman-ford, this route contains " << bfcovidpath << " covid cases." << endl;
+
             continue;
         }
         if(option == "4") {
