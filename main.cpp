@@ -368,19 +368,19 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
 
                 if ((*traverse).second + shortestDistances[cityList[j]].second < shortestDistances[(*traverse).first.cityName].second) {
                     shortestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
-                    shortestDistances[(*traverse).first.cityName].second = j;
+                    shortestDistances[(*traverse).first.cityName].second = (*traverse).second;
                 }
                 ++traverse;
             }
         }
     }
-    int shortestDistance = shortestDistances[src].second;
-    /*
+
+    //int shortestDistance = shortestDistances[src].second;
+    int shortestDistance = 0;
     for (it = shortestDistances.begin(); it != shortestDistances.end(); it++)
     {
         shortestDistance += it->second.second;
     }
-     */
     return shortestDistance;
 }
 
@@ -410,19 +410,18 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
 
                 if ((*traverse).first.numCovidCases + safestDistances[cityList[j]].second < safestDistances[(*traverse).first.cityName].second) {
                     safestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
-                    safestDistances[(*traverse).first.cityName].second = j;
+                    safestDistances[(*traverse).first.cityName].second = (*traverse).first.numCovidCases;
                 }
                 ++traverse;
             }
         }
     }
-    int safestPath = safestDistances[src].second;
-    /*
+    //int safestPath = safestDistances[src].second;
+    int safestPath = 0;
     for (it = safestDistances.begin(); it != safestDistances.end(); it++)
     {
         safestPath += it->second.second;
     }
-     */
     return safestPath;
 }
 
