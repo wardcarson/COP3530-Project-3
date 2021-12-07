@@ -38,8 +38,8 @@ public:
     void readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities, vector<string> &allCities);
     vector<string> shortestDistance(const Graph& graph, string src, string destination);
     vector<string> safestCovidPath(const Graph& graph, string src, string destination);
-    vector<string> bellmanFordShortestPath(Graph &graph, string src, string dest);
-    vector<string> bellmanFordSafestPath(Graph &graph, string src, string dest);
+    int bellmanFordShortestPath(Graph &graph, string src, string dest);
+    int bellmanFordSafestPath(Graph &graph, string src, string dest);
 };
 
 void Graph::insertEdge(string from, City to, int distance) {
@@ -336,7 +336,7 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
     return safestPath; //this stores the path in backeward direction like from desination to source
 }
 
-vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
+int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
     map<string, pair<string, int>> shortestDistances;
     map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
@@ -368,16 +368,15 @@ vector<string> Graph::bellmanFordShortestPath(Graph &graph, string src, string d
             }
         }
     }
-    vector<string> shortestPath;
+    int shortestDistance = 0;
     for (it = shortestDistances.begin(); it != shortestDistances.end(); it++)
     {
-        shortestPath.push_back(it->first);
+        shortestDistance += it->second.second;
     }
-    shortestPath.push_back(dest);
-    return shortestPath;
+    return shortestDistance;
 }
 
-vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
+int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
     map<string, pair<string, int>> safestDistances;
     map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
@@ -409,12 +408,11 @@ vector<string> Graph::bellmanFordSafestPath(Graph &graph, string src, string des
             }
         }
     }
-    vector<string> safestPath;
+    int safestPath;
     for (it = safestDistances.begin(); it != safestDistances.end(); it++)
     {
-        safestPath.push_back(it->first);
+        safestPath += it->second.second;
     }
-    //safestPath.push_back(dest); //don't need this, since it was pushed back already from map
     return safestPath;
 }
 
