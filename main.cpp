@@ -352,7 +352,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         shortestDistances[cityList[i]].second = -1;
     }
 
-    shortestDistances[src].first = src; //src
+    shortestDistances[src].first = src;
     shortestDistances[src].second = 0;
 
     for (int i = 1; i <= cityList.size() - 1; ++i) {
@@ -374,7 +374,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
             }
         }
     }
-    int shortestDistance = shortestDistances[dest].second;
+    int shortestDistance = shortestDistances[src].second;
     /*
     for (it = shortestDistances.begin(); it != shortestDistances.end(); it++)
     {
@@ -416,7 +416,7 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
             }
         }
     }
-    int safestPath = safestDistances[dest].second;
+    int safestPath = safestDistances[src].second;
     /*
     for (it = safestDistances.begin(); it != safestDistances.end(); it++)
     {
