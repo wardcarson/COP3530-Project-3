@@ -184,9 +184,15 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             std::mt19937 gen2(rd()); // seed the generator
             std::uniform_int_distribution<> distr2(0, 10000); // define the range
             //auto temp = mapOfallCities[names.at(index)];
-            for(int i = 0; i < 4; i++) {
+            int adjacentNeighboSize = 4;
+            for(int i = 0; i < adjacentNeighboSize; i++) {
                 index = distr(gen);
                 distance = distr2(gen2);
+                if (cityName == allCities[index])  //should help us to avoid self loop
+                {
+                    adjacentNeighboSize++;
+                    continue;
+                }
                 insertEdge(newCity.cityName,mapOfallCities.at(allCities[index]), distance);
             }
         }
