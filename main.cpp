@@ -382,9 +382,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
                 indexOfsmall = j;
             }
         }
-        V_S.erase(indexOfsmall);
-
-
+      
         for (auto x : graph.graph.at(indexOfsmall))
         {
             if ((d[indexOfsmall] + x.second) < d[x.first.cityName]) {
