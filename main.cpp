@@ -392,17 +392,29 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
 
     }
-   // check for negative cycle
     /*
+   // check for negative cycle
     for (auto i: graph.graph.at(src))
     {
-        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) < d[graph.graph.at(dest).at(i).first.cityName])
+        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) > d[graph.graph.at(dest).at(i).first.cityName])
         {
             cout << "Error! Graph Contains a Negative Cycle";
         }
 
     }
-    */
+     */
+
+    for (int i = 0; i < numEdges; i++) {
+        for (int j = 0; j < cityList[i].size(); j++) {
+            int u = graph.graph[src][j].second;
+            int v = graph.graph[dest][j].second;
+            int weight = graph.graph[cityList[i]][j].second;
+            if (d[graph.graph[src][j].first.cityName] != INT_MAX && d[graph.graph[src][j].first.cityName] + weight < d[graph.graph[dest][j].first.cityName]) {
+                cout << "Error! Graph Contains a Negative Cycle";
+            }
+        }
+    }
+
     
     int shortestPath = 0;
     bool working = true;
@@ -420,47 +432,6 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
     return shortestPath;  //This stores the path in the backward direction.
 
 
-    /*
-    map<string, pair<string, int>> shortestDistances;
-    map<string, pair<string, int>>::iterator it;
-    vector<pair<City, int>>::iterator traverse;
-
-    for (int i = 0; i < cityList.size(); ++i) {
-        shortestDistances[cityList[i]].first = "";
-        shortestDistances[cityList[i]].second = -1;
-    }
-
-    shortestDistances[src].first = src;
-    shortestDistances[src].second = 0;
-
-    for (int i = 1; i <= cityList.size() - 1; ++i) {
-        for (int j = 1; j <= cityList.size()-1; ++j) {
-
-            traverse = graph.graph[cityList[j]].begin();
-
-            while (traverse != graph.graph[cityList[j]].end()) {
-                if (shortestDistances[cityList[j]].first == "") {
-                    ++traverse;
-                    continue;
-                }
-
-                if ((*traverse).second + shortestDistances[cityList[j]].second < shortestDistances[(*traverse).first.cityName].second) {
-                    shortestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
-                    shortestDistances[(*traverse).first.cityName].second = (*traverse).second;
-                }
-                ++traverse;
-            }
-        }
-    }
-
-    //int shortestDistance = shortestDistances[src].second;
-    int shortestDistance = 0;
-    for (it = shortestDistances.begin(); it != shortestDistances.end(); it++)
-    {
-        shortestDistance += it->second.second;
-    }
-    return shortestDistance;
-     */
 }
 
 int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
@@ -535,61 +506,11 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         }
     }
     return safestPath; //this stores the path in backeward direction like from desination to source
-
-    /*
-    map<string, pair<string, int>> safestDistances;
-    map<string, pair<string, int>>::iterator it;
-    vector<pair<City, int>>::iterator traverse;
-
-    for (int i = 0; i < cityList.size(); ++i) {
-        safestDistances[cityList[i]].first = "";
-        safestDistances[cityList[i]].second = -1;
-    }
-
-    safestDistances[src].first = src; //src
-    safestDistances[src].second = 0;
-
-    for (int i = 1; i <= cityList.size() - 1; ++i) {
-        for (int j = 1; j <= cityList.size()-1; ++j) {   
-
-            traverse = graph.graph[cityList[j]].begin();
-
-            while (traverse != graph.graph[cityList[j]].end()) {
-                if (safestDistances[cityList[j]].first == "") {
-                    ++traverse;
-                    continue;
-                }
-
-                if ((*traverse).first.numCovidCases + safestDistances[cityList[j]].second < safestDistances[(*traverse).first.cityName].second) {
-                    safestDistances[(*traverse).first.cityName].first = (*traverse).first.cityName;
-                    safestDistances[(*traverse).first.cityName].second = (*traverse).first.numCovidCases;
-                }
-                ++traverse;
-            }
-        }
-    }
-    //int safestPath = safestDistances[src].second;
-    int safestPath = 0;
-    for (it = safestDistances.begin(); it != safestDistances.end(); it++)
-    {
-        safestPath += it->second.second;
-    }
-    return safestPath;
-     */
 }
 
 
 
 int main() {
-    /*
-    Graph *graph = new Graph;
-    graph->readCSVFindAllCities("Covid Data points.csv");
-    graph->insertEdge("Orlando", "LA", 500);
-    graph->insertEdge("Orlando", "New Orleans", 200);
-    graph->insertEdge("LA", "Orlando", 500);
-    graph->insertEdge("New Orleans" , "Orlando", 200);
-    graph->printGraph();
-     */
     Graph* graph = new Graph();
     //graph->readCSVFindAllCities("coviddatapoints.csv");
     //graph->readCSVFindAllCities("testing.csv");
