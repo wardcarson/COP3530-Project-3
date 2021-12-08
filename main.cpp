@@ -472,7 +472,7 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
     // check for negative cycle
     for (auto x : graph.graph) {
         for (int i = 0; i < x.second.size(); i++) {
-            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].second)) {
+            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].first.numCovidCases)) {
                 cout << "Error! Graph Contains a Negative Cycle" << endl;
             }
         }
