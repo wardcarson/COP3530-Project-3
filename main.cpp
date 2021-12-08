@@ -404,16 +404,14 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
     }
      */
 
-    for (int i = 0; i < numEdges; i++) {
-        for (int j = 0; j < cityList[i].size(); j++) {
-            int u = graph.graph[src][j].second;
-            int v = graph.graph[dest][j].second;
-            int weight = graph.graph[cityList[i]][j].second;
-            if (d[graph.graph[src][j].first.cityName] != INT_MAX && u + weight > v) {
-                cout << "Error! Graph Contains a Negative Cycle";
+    for (auto x : graph.graph) {
+        for (int i = 0; i < x.second.size(); i++) {
+            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].second)) {
+                cout << "Error! Graph Contains a Negative Cycle" << endl;
             }
         }
     }
+
 
     
     int shortestPath = 0;
