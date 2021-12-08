@@ -38,7 +38,7 @@ public:
     void readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCities, vector<string> &allCities);
     vector<string> shortestDistance(const Graph& graph, string src, string destination);
     vector<string> safestCovidPath(const Graph& graph, string src, string destination);
-    int bellmanFordShortestPath(Graph &graph, string src, string dest);
+    long long bellmanFordShortestPath(Graph &graph, string src, string dest);
     int bellmanFordSafestPath(Graph &graph, string src, string dest);
 };
 
@@ -182,7 +182,7 @@ void Graph::readCSVAddtoGraph(string nameOfFile, map<string, City> &mapOfallCiti
             std::mt19937 gen(rd()); // seed the generator
             std::uniform_int_distribution<> distr(0, allCities.size()-1); // define the range
             std::mt19937 gen2(rd()); // seed the generator
-            std::uniform_int_distribution<> distr2(0, 10000); // define the range
+            std::uniform_int_distribution<> distr2(0, 5000); // define the range
             //auto temp = mapOfallCities[names.at(index)];
             int adjacentNeighboSize = 4;
             for(int i = 0; i < adjacentNeighboSize; i++) {
@@ -342,12 +342,19 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
     return safestPath; //this stores the path in backeward direction like from desination to source
 }
 
-int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
+long long Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
+
     int v = graph.numCities;
     int infinity = ~(1 << 31);
-    map<string, long long> d;   
+    map<string, long long> d;   //chnanged map value from int to long long to avoid integer overflow for large distance
     map<string, string> p;
+    set<string> S = {src};
     set<string> V_S;
+
+    //iterte through all cities
+    for (int i = 0; i<cityList.size(); i++) {
+        V_S.insert(cityList[i]);
+    }
 
     //iterating through all cities
     for (int i = 0; i < cityList.size(); i++) {
@@ -365,13 +372,9 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
     }
     d[src] = 0;
-   
-    //iterate through all cities
-    for (int i = 0; i < cityList.size(); i++) {
-        V_S.insert(cityList[i]);
 
-    }
-    for (int i = 0; i < cityList.size(); i++) {
+    while (!V_S.empty())
+    {
         int smallVal = infinity;
         string indexOfsmall;
 
@@ -382,7 +385,9 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
                 indexOfsmall = j;
             }
         }
-      
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
         for (auto x : graph.graph.at(indexOfsmall))
         {
             if ((d[indexOfsmall] + x.second) < d[x.first.cityName]) {
@@ -390,54 +395,35 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
                 p[x.first.cityName] = indexOfsmall;
             }
         }
-
     }
-/*
+
    // check for negative cycle
     for (auto x : graph.graph) {
         for (int i = 0; i < x.second.size(); i++) {
-            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].second)) {
+            if (d[x.first] == (d[x.second[i].first.cityName] + x.second[i].second)) {
                 cout << "Error! Graph Contains a Negative Cycle" << endl;
             }
         }
     }
 
-*/
-    
-    int shortestPath = 0;
-    bool working = true;
-    string temp = dest;
-    while (working) {
-        if (temp == src) {
-            shortestPath += d[temp];
-            working = false;
-        }
-        else {
-            shortestPath += d[temp];
-            temp = p[temp];
-        }
-    }
-    return shortestPath;  //This stores the path in the backward direction.
-
-
+    return d[dest];  //This stores the path in the backward direction.
 }
 
 int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
-    
     int v = graph.numCities;
     int infinity = ~(1 << 31);
-    map<string, long long> d;   
+    map<string, int> d;
     map<string, string> p;
+    set<string> S = {src};
     set<string> V_S;
 
     //iterate through all cities
-    for (int i = 0; i < cityList.size(); i++) {
+    for (int i = 0; i<cityList.size(); i++) {
         V_S.insert(cityList[i]);
     }
 
     //iterating through all cities
-    for (int i = 0; i < cityList.size(); i++)
-    {
+    for (int i = 0; i < cityList.size(); i++) {
         p[cityList[i]] = src;
         for (auto x : graph.graph.at(src))
         {
@@ -452,71 +438,68 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         }
     }
     d[src] = 0;
-    int smallVal = infinity;
-    string indexOfsmall;
-    for (auto j : V_S)
-    {
-        if (d[j] <= smallVal) {
-            smallVal = d[j];
-            indexOfsmall = j;
-        }
-    }
-    for (auto x : graph.graph.at(indexOfsmall))
-    {
-        if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
-            d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
-            p[x.first.cityName] = indexOfsmall;
-        }
-    }
-    /*
 
-    // check for negative cycle
+    while (!V_S.empty())
+    {
+        int smallVal = infinity;
+        string indexOfsmall;
+
+        for (auto j : V_S)
+        {
+            if (d[j] <= smallVal) {
+                smallVal = d[j];
+                indexOfsmall = j;
+            }
+        }
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
+        for (auto x : graph.graph.at(indexOfsmall))
+        {
+            if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
+                d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
+                p[x.first.cityName] = indexOfsmall;
+            }
+        }
+    }
+
+    //check for negative cycle
+
     for (auto x : graph.graph) {
         for (int i = 0; i < x.second.size(); i++) {
-            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].first.numCovidCases)) {
+            if (d[x.first] == (d[x.second[i].first.cityName] + x.second[i].first.numCovidCases)) {
                 cout << "Error! Graph Contains a Negative Cycle" << endl;
             }
         }
     }
-*/
 
-    int safestPath = 0;
-    bool working = true;
-    string temp = dest;
-    while (working) {
-        if (temp == src) {
-            safestPath += d[temp];
-            working = false;
-        }
-        else {
-            safestPath += d[temp];
-            temp = p[temp];
-        }
-    }
-    return safestPath; //this stores the path in backeward direction like from desination to source
+    return d[dest]; //this stores the path in backeward direction like from desination to source
 }
 
 
 
 int main() {
     Graph* graph = new Graph();
+    //switch to this read csv file for full 100k points
     //graph->readCSVFindAllCities("coviddatapoints.csv");
+    //switch to this for smaller csv of major cities
+    graph->readCSVFindAllCities("smallerdatapoints.csv");
+    //switch to this for super small test
     //graph->readCSVFindAllCities("testing.csv");
-    //graph->printGraph();
+
     bool runProgram = true;
 
     string source;
     string destination;
     string option;
-    //graph->readCSVFindAllCities("testing.csv");
-    graph->readCSVFindAllCities("smallerdatapoints.csv");
     while(runProgram) {
         cout << "Welcome to the Covid travel Calculator " << endl;
         cout << "Please select an option: " << endl;
         cout << "1. Find shortest route between locations" << endl;
         cout << "2. Find safest route between locations" << endl;
         cout << "3. Compare safest route and shortest route between locations" << endl;
-        cout << "4. Exit Program" << endl;
+        cout << "4. Print Graph" << endl;
+        cout << "5. Exit Program" << endl;
         cin >> option;
         if(option == "1") {
             cout << "Please enter a starting location: " << endl;
@@ -536,7 +519,8 @@ int main() {
                     cout << " -> ";
                 }
             }
-                // now the string of vector should work//need to change it to iteration of vector
+            cout << endl;
+            // now the string of vector should work//need to change it to iteration of vector
             int bfsp = graph->bellmanFordShortestPath(*graph,source,destination);
             cout << endl;
             cout << "According to Bellman-ford, from " << source << " to " << destination << " is " << bfsp << " miles." << endl;
@@ -564,7 +548,8 @@ int main() {
                     cout << " -> ";
                 }
             }
-                // now the string of vector should work//need to change it to iteration of vector
+            cout << endl;
+            // now the string of vector should work//need to change it to iteration of vector
             int bfcovidpath = graph->bellmanFordSafestPath(*graph,source,destination);
             cout << endl;
             cout << "According to Bellman-ford, this route contains " << bfcovidpath << " covid cases." << endl;
@@ -590,6 +575,7 @@ int main() {
                     cout << " -> ";
                 }
             }
+            cout << endl;
             // now the string of vector should work//need to change it to iteration of vector
             int bfsp = graph->bellmanFordShortestPath(*graph,source,destination);
             cout << endl;
@@ -603,14 +589,18 @@ int main() {
                     cout << " -> ";
                 }
             }
+            cout << endl;
             // now the string of vector should work//need to change it to iteration of vector
             int bfcovidpath = graph->bellmanFordSafestPath(*graph,source,destination);
-            cout << endl;
+            //cout << endl;
             cout << "According to Bellman-ford, this route contains " << bfcovidpath << " covid cases." << endl;
-
+            cout << endl;
             continue;
         }
         if(option == "4") {
+            graph->printGraph();
+        }
+        if(option == "5") {
             break;
         }
         else {
@@ -621,4 +611,3 @@ int main() {
     }
 
 }
-
