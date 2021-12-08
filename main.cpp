@@ -343,6 +343,75 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
 }
 
 int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
+    int v = graph.numCities;
+    int infinity = ~(1 << 31);
+    map<string, long long> d;   //chnanged map value from int to long long to avoid integer overflow for large distance
+    map<string, string> p;
+    set<string> S = {src};
+    set<string> V_S;
+
+    //iterte through all cities
+    for (int i = 0; i<cityList.size(); i++) {
+        V_S.insert(cityList[i]);
+    }
+
+    //iterating through all cities
+    for (int i = 0; i < cityList.size(); i++) {
+        p[cityList[i]] = src;
+        for (auto x : graph.graph.at(src))
+        {
+            if (x.first.cityName == cityList[i])
+            {
+                d[cityList[i]] = x.second;
+            }
+            else
+            {
+                d[cityList[i]] = infinity;
+            }
+        }
+    }
+    d[src] = 0;
+
+    while (!V_S.empty())
+    {
+        int smallVal = infinity;
+        string indexOfsmall;
+
+        for (auto j : V_S)
+        {
+            if (d[j] <= smallVal) {
+                smallVal = d[j];
+                indexOfsmall = j;
+            }
+        }
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
+        for (auto x : graph.graph.at(indexOfsmall))
+        {
+            if ((d[indexOfsmall] + x.second) < d[x.first.cityName]) {
+                d[x.first.cityName] = d[indexOfsmall] + x.second;
+                p[x.first.cityName] = indexOfsmall;
+            }
+        }
+    }
+    int shortestPath = 0;
+    bool working = true;
+    string temp = dest;
+    while (working) {
+        if (temp == src) {
+            shortestPath += d[temp];
+            working = false;
+        }
+        else {
+            shortestPath += d[temp];
+            temp = p[temp];
+        }
+    }
+    return shortestPath;  //This stores the path in the backward direction.
+
+
+    /*
     map<string, pair<string, int>> shortestDistances;
     map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
@@ -382,9 +451,80 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         shortestDistance += it->second.second;
     }
     return shortestDistance;
+     */
 }
 
 int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
+    int v = graph.numCities;
+    int infinity = ~(1 << 31);
+    map<string, int> d;
+    map<string, string> p;
+    set<string> S = {src};
+    set<string> V_S;
+
+    //iterate through all cities
+    for (int i = 0; i<cityList.size(); i++) {
+        V_S.insert(cityList[i]);
+    }
+
+    //iterating through all cities
+    for (int i = 0; i < cityList.size(); i++) {
+        p[cityList[i]] = src;
+        for (auto x : graph.graph.at(src))
+        {
+            if (x.first.cityName == cityList[i])
+            {
+                d[cityList[i]] = x.first.numCovidCases;
+            }
+            else
+            {
+                d[cityList[i]] = infinity;
+            }
+        }
+    }
+    d[src] = 0;
+
+    while (!V_S.empty())
+    {
+        int smallVal = infinity;
+        string indexOfsmall;
+
+        for (auto j : V_S)
+        {
+            if (d[j] <= smallVal) {
+                smallVal = d[j];
+                indexOfsmall = j;
+            }
+        }
+        V_S.erase(indexOfsmall);
+        S.insert(indexOfsmall);
+
+        for (auto x : graph.graph.at(indexOfsmall))
+        {
+            if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
+                d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
+                p[x.first.cityName] = indexOfsmall;
+            }
+        }
+    }
+    int safestPath = 0;
+    bool working = true;
+    string temp = dest;
+    while (working) {
+        if (temp == src) {
+            safestPath += d[temp];
+            working = false;
+        }
+        else {
+            safestPath += d[temp];
+            temp = p[temp];
+        }
+    }
+    return safestPath; //this stores the path in backeward direction like from desination to source
+
+
+
+    /*
     map<string, pair<string, int>> safestDistances;
     map<string, pair<string, int>>::iterator it;
     vector<pair<City, int>>::iterator traverse;
@@ -423,10 +563,8 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         safestPath += it->second.second;
     }
     return safestPath;
+     */
 }
-
-
-
 
 
 
