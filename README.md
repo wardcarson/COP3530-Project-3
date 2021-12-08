@@ -1,7 +1,8 @@
 # COP3530-Project-3
 
 To Do List:
-- create a .csv file with 100,000 data points so that we can upload that data easily to our code base
+- create a .csv file with 100,000 data points so that we can upload that data easily to our code base [coviddatapoints.csv](https://github.com/anna-sheehan/COP3530-Project-3/files/7679439/coviddatapoints.csv)
+
 
 
 - Create our graph class with a graph constructor for the 100,000 covid data points using an ADJACENCY LIST.
