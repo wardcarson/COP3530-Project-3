@@ -392,7 +392,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
 
     }
-
+/*
    // check for negative cycle
     for (auto x : graph.graph) {
         for (int i = 0; i < x.second.size(); i++) {
@@ -402,7 +402,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
     }
 
-
+*/
     
     int shortestPath = 0;
     bool working = true;
@@ -468,6 +468,7 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
             p[x.first.cityName] = indexOfsmall;
         }
     }
+    /*
 
     // check for negative cycle
     for (auto x : graph.graph) {
@@ -477,7 +478,7 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
             }
         }
     }
-
+*/
 
     int safestPath = 0;
     bool working = true;
