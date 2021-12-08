@@ -392,18 +392,8 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
 
     }
-    /*
+
    // check for negative cycle
-    for (auto i: graph.graph.at(src))
-    {
-        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) > d[graph.graph.at(dest).at(i).first.cityName])
-        {
-            cout << "Error! Graph Contains a Negative Cycle";
-        }
-
-    }
-     */
-
     for (auto x : graph.graph) {
         for (int i = 0; i < x.second.size(); i++) {
             if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].second)) {
@@ -479,17 +469,16 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         }
     }
 
-   /*
-    //check for negative cycle
-    for (int i = 0; i < numEdges; i++)
-    {
-        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) < d[graph.graph.at(dest).at(i).first.cityName])
-        {
-            cout << "Error! Graph Contains a Negative Cycle";
+    // check for negative cycle
+    for (auto x : graph.graph) {
+        for (int i = 0; i < x.second.size(); i++) {
+            if (d[x.first] > (d[x.second[i].first.cityName] + x.second[i].second)) {
+                cout << "Error! Graph Contains a Negative Cycle" << endl;
+            }
         }
-
     }
-    */
+
+
     int safestPath = 0;
     bool working = true;
     string temp = dest;
