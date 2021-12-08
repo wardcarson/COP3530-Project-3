@@ -345,15 +345,9 @@ vector<string> Graph::safestCovidPath(const Graph& graph, string src, string des
 int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
     int v = graph.numCities;
     int infinity = ~(1 << 31);
-    map<string, long long> d;   //chnanged map value from int to long long to avoid integer overflow for large distance
+    map<string, long long> d;   
     map<string, string> p;
-    set<string> S = {src};
     set<string> V_S;
-
-    //iterte through all cities
-    for (int i = 0; i<cityList.size(); i++) {
-        V_S.insert(cityList[i]);
-    }
 
     //iterating through all cities
     for (int i = 0; i < cityList.size(); i++) {
@@ -371,9 +365,13 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
         }
     }
     d[src] = 0;
+   
+    //iterate through all cities
+    for (int i = 0; i < cityList.size(); i++) {
+        V_S.insert(cityList[i]);
 
-    while (!V_S.empty())
-    {
+    }
+    for (int i = 0; i < cityList.size(); i++) {
         int smallVal = infinity;
         string indexOfsmall;
 
@@ -385,7 +383,7 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
             }
         }
         V_S.erase(indexOfsmall);
-        S.insert(indexOfsmall);
+
 
         for (auto x : graph.graph.at(indexOfsmall))
         {
@@ -394,7 +392,20 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
                 p[x.first.cityName] = indexOfsmall;
             }
         }
+
     }
+   // check for negative cycle
+    /*
+    for (auto i: graph.graph.at(src))
+    {
+        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) < d[graph.graph.at(dest).at(i).first.cityName])
+        {
+            cout << "Error! Graph Contains a Negative Cycle";
+        }
+
+    }
+    */
+    
     int shortestPath = 0;
     bool working = true;
     string temp = dest;
@@ -455,20 +466,21 @@ int Graph::bellmanFordShortestPath(Graph &graph, string src, string dest) {
 }
 
 int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
+    
     int v = graph.numCities;
     int infinity = ~(1 << 31);
-    map<string, int> d;
+    map<string, long long> d;   
     map<string, string> p;
-    set<string> S = {src};
     set<string> V_S;
 
     //iterate through all cities
-    for (int i = 0; i<cityList.size(); i++) {
+    for (int i = 0; i < cityList.size(); i++) {
         V_S.insert(cityList[i]);
     }
 
     //iterating through all cities
-    for (int i = 0; i < cityList.size(); i++) {
+    for (int i = 0; i < cityList.size(); i++)
+    {
         p[cityList[i]] = src;
         for (auto x : graph.graph.at(src))
         {
@@ -483,30 +495,34 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         }
     }
     d[src] = 0;
-
-    while (!V_S.empty())
+    int smallVal = infinity;
+    string indexOfsmall;
+    for (auto j : V_S)
     {
-        int smallVal = infinity;
-        string indexOfsmall;
-
-        for (auto j : V_S)
-        {
-            if (d[j] <= smallVal) {
-                smallVal = d[j];
-                indexOfsmall = j;
-            }
-        }
-        V_S.erase(indexOfsmall);
-        S.insert(indexOfsmall);
-
-        for (auto x : graph.graph.at(indexOfsmall))
-        {
-            if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
-                d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
-                p[x.first.cityName] = indexOfsmall;
-            }
+        if (d[j] <= smallVal) {
+            smallVal = d[j];
+            indexOfsmall = j;
         }
     }
+    for (auto x : graph.graph.at(indexOfsmall))
+    {
+        if ((d[indexOfsmall] + x.first.numCovidCases) < d[x.first.cityName]) {
+            d[x.first.cityName] = d[indexOfsmall] + x.first.numCovidCases;
+            p[x.first.cityName] = indexOfsmall;
+        }
+    }
+
+   /*
+    //check for negative cycle
+    for (int i = 0; i < numEdges; i++)
+    {
+        if ((d[graph.graph.at(src).at(i).first.cityName] + (graph.graph.at(src).at(i).second)) < d[graph.graph.at(dest).at(i).first.cityName])
+        {
+            cout << "Error! Graph Contains a Negative Cycle";
+        }
+
+    }
+    */
     int safestPath = 0;
     bool working = true;
     string temp = dest;
@@ -521,8 +537,6 @@ int Graph::bellmanFordSafestPath(Graph &graph, string src, string dest) {
         }
     }
     return safestPath; //this stores the path in backeward direction like from desination to source
-
-
 
     /*
     map<string, pair<string, int>> safestDistances;
